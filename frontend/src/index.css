@@ -1,0 +1,1711 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  line-height: 1.4;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: #1e293b;
+  background-color: #f0fdf4;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  background-attachment: fixed;
+  overflow-y: auto; /* Permite scroll vertical por defecto en móviles */
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  body {
+    height: 100vh;
+    overflow: hidden; /* Evita scroll vertical en la página principal en pantallas grandes */
+  }
+}
+
+/* --- ANIMACIÓN DE PARTÍCULAS (HOJAS FLOTANTES) --- */
+@keyframes drift {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-115vh) translateX(100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.bubble-wrapper {
+  position: absolute;
+  bottom: -120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  border: 3px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 
+    0 8px 16px rgba(34, 197, 94, 0.08),
+    inset 0 4px 10px rgba(255, 255, 255, 0.8),
+    inset 0 -4px 10px rgba(34, 197, 94, 0.08);
+  cursor: pointer;
+  user-select: none;
+  z-index: 2; /* encima del fondo gradiente, debajo de las tarjetas */
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s ease, border-color 0.2s ease;
+  filter: drop-shadow(0 4px 10px rgba(34, 197, 94, 0.1));
+}
+
+.bubble-wrapper:hover {
+  transform: scale(1.15) rotate(5deg);
+  background-color: rgba(255, 255, 255, 0.55);
+  border-color: #86efac;
+}
+
+.bubble-wrapper:active {
+  transform: scale(0.9) rotate(-5deg);
+}
+
+/* --- ANIMACIONES DE BOTONES --- */
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(1deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes pulse-gold {
+  0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(250, 204, 21, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
+}
+
+@keyframes pulse-silver {
+  0% { box-shadow: 0 0 0 0 rgba(148, 163, 184, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(148, 163, 184, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(148, 163, 184, 0); }
+}
+
+@keyframes pulse-bronze {
+  0% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(217, 119, 6, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); }
+}
+
+@keyframes scale-up {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* --- CONTENEDOR DE LA APP (DASHBOARD GRID) --- */
+.eco-app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 1.2rem;
+  gap: 1.2rem;
+  position: relative;
+  overflow-y: auto;
+  width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .eco-app-layout {
+    padding-bottom: 95px !important; /* Espacio extra para celular, evita tapar contenido */
+  }
+}
+
+@media (min-width: 1024px) {
+  .eco-app-layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    height: 100vh;
+    overflow: hidden;
+    width: 100%;
+    max-width: none !important;
+    margin: 0;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+}
+
+/* --- COLUMNA IZQUIERDA (PERFIL Y AGREGADOR DIRECTO) --- */
+.eco-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  height: auto;
+}
+
+@media (min-width: 1024px) {
+  .eco-sidebar {
+    height: 100%;
+  }
+}
+
+/* Tarjeta Perfil */
+.profile-card {
+  padding: 1.25rem;
+  background: white;
+  border: 4px solid #86efac;
+  border-radius: 24px;
+  box-shadow: 0 8px 0 #bbf7d0; /* Sombra sólida 3D caricatura */
+}
+
+.profile-header-area {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: white;
+  border: 3px solid white;
+  box-shadow: 0 4px 10px rgba(34, 197, 94, 0.2);
+}
+
+.profile-details h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #15803d;
+  text-transform: uppercase;
+}
+
+.profile-details p {
+  margin: 3px 0 0 0;
+  font-size: 0.85rem;
+  color: #475569;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Mascota Burbuja de Diálogo */
+.mascot-bubble-area {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  margin-top: 1.2rem;
+}
+
+.mascot-avatar {
+  font-size: 2.2rem;
+  animation: float 4s ease-in-out infinite;
+}
+
+.mascot-bubble {
+  background: #f0fdf4;
+  border: 2px solid #cbd5e1;
+  border-radius: 18px;
+  padding: 0.75rem 1rem;
+  position: relative;
+  font-size: 0.85rem;
+  font-weight: 750;
+  color: #1e293b;
+  line-height: 1.4;
+  font-style: italic;
+  flex-grow: 1;
+}
+
+.mascot-bubble::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 15px;
+  border-width: 6px 10px 6px 0;
+  border-style: solid;
+  border-color: transparent #cbd5e1 transparent transparent;
+}
+
+.mascot-bubble::after {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 15px;
+  border-width: 6px 10px 6px 0;
+  border-style: solid;
+  border-color: transparent #f0fdf4 transparent transparent;
+}
+
+/* Agregador de Botellas Directo */
+.direct-adder-card {
+  flex-grow: 1;
+  padding: 1.5rem;
+  background: white;
+  border: 4px solid #86efac;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  box-shadow: 0 8px 0 #bbf7d0; /* Sombra sólida 3D */
+}
+
+/* --- COLUMNA DERECHA (KPIs, TOPS Y TABLA HEROES) --- */
+.eco-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  height: auto;
+  overflow: visible;
+}
+
+@media (min-width: 1024px) {
+  .eco-main-content {
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+/* Rejilla unificada de 6 KPIs */
+.kpis-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.compact-kpi-card {
+  background: white;
+  border: 4px solid #86efac;
+  border-radius: 24px;
+  padding: 1.2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 0 #bbf7d0; /* Sombra sólida 3D */
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.kpi-card-green {
+  background-color: #f0fdf4 !important; /* Verde bajísimo (green-50) */
+  border-color: #86efac !important;
+  box-shadow: 0 8px 0 #bbf7d0 !important;
+}
+
+.kpi-card-yellow {
+  background-color: #fffbeb !important; /* Amarillo/naranja bajísimo (yellow-50) */
+  border-color: #fef08a !important;
+  box-shadow: 0 8px 0 #fef08a !important;
+}
+
+.kpi-card-blue {
+  background-color: #eff6ff !important; /* Celeste/azul bajísimo (blue-50) */
+  border-color: #bfdbfe !important;
+  box-shadow: 0 8px 0 #bfdbfe !important;
+}
+
+.compact-kpi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(34, 197, 94, 0.12);
+  border-color: #86efac;
+}
+
+.kpi-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #f0fdf4;
+  margin-bottom: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.compact-kpi-card:hover .kpi-icon-container {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.compact-kpi-card:nth-child(2) .kpi-icon-container {
+  background: #fffbeb;
+}
+.compact-kpi-card:nth-child(3) .kpi-icon-container {
+  background: #eff6ff;
+}
+
+.compact-kpi-label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.compact-kpi-value {
+  font-size: 2.6rem;
+  font-weight: 900;
+  margin: 4px 0;
+  line-height: 1.1;
+}
+
+.compact-kpi-value.green { color: #22c55e; }
+.compact-kpi-value.yellow { color: #f59e0b; }
+.compact-kpi-value.blue { color: #3b82f6; }
+
+.compact-kpi-subtext {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+/* Tops row removed (merged with kpis-grid) */
+
+.compact-top-card {
+  padding: 0.8rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centrar contenido para eliminar espacio vacío a la derecha */
+  gap: 1.2rem;
+  background: white;
+  border: 4px solid #86efac;
+  border-radius: 20px;
+  box-shadow: 0 6px 0 #bbf7d0; /* Sombra sólida 3D */
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.compact-top-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(34, 197, 94, 0.12);
+  filter: brightness(1.02); /* Mejora de hover */
+}
+
+/* Colores no repetidos para los 6 KPIs */
+.top-card-green { border-color: #86efac; background: #f0fdf4; box-shadow: 0 6px 0 #bbf7d0; }   /* 1. Mis Botellas */
+.top-card-orange { border-color: #fdba74; background: #fff7ed; box-shadow: 0 6px 0 #fed7aa; }  /* 2. Mi Posición */
+.top-card-blue { border-color: #93c5fd; background: #eff6ff; box-shadow: 0 6px 0 #bfdbfe; }    /* 3. Total Colegio */
+.top-card-gold { border-color: #fcd34d; background: #fffbeb; box-shadow: 0 6px 0 #fef08a; }    /* 4. Niño Top */
+.top-card-purple { border-color: #d8b4fe; background: #faf5ff; box-shadow: 0 6px 0 #e9d5ff; }  /* 5. Familia Top */
+.top-card-cyan { border-color: #67e8f9; background: #ecfeff; box-shadow: 0 6px 0 #a5f3fc; }    /* 6. Salón Top */
+
+.compact-top-icon {
+  font-size: 2rem; /* Emojis un poco más grandes para lucir premium */
+}
+
+.compact-top-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left; /* Alineado de texto limpio a la izquierda dentro del contenedor centrado */
+}
+
+.compact-top-label {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: #334155; /* Color oscuro con alto contraste para evitar confusión visual */
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 2px;
+}
+
+.compact-top-name {
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+/* Colores oscuros legibles específicos para los nombres/valores de cada tarjeta */
+.top-card-gold .compact-top-name { color: #b45309; }
+.top-card-purple .compact-top-name { color: #6b21a8; }
+.top-card-teal .compact-top-name { color: #115e59; }
+.top-card-green .compact-top-name { color: #15803d; }
+.top-card-orange .compact-top-name { color: #c2410c; }
+.top-card-blue .compact-top-name { color: #1d4ed8; }
+.top-card-cyan .compact-top-name { color: #0e7490; }
+
+.compact-top-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+/* Sección Héroes (Tabla) */
+.heroes-card {
+  flex-grow: 1;
+  padding: 1.25rem;
+  background: white;
+  border: 4px solid #86efac;
+  border-radius: 24px;
+  box-shadow: 0 8px 0 #bbf7d0; /* Sombra sólida 3D */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.heroes-card-header {
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.heroes-card-header h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #15803d;
+}
+
+.table-scrollable-container {
+  overflow-y: auto;
+  flex-grow: 1;
+  border-radius: 12px;
+}
+
+/* Barra de Acciones Dock (Estilo Premium Flotante) */
+.actions-dock {
+  background: white;
+  border: 4px solid #86efac;
+  border-radius: 24px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 8px 0 #bbf7d0; /* Sombra sólida 3D */
+  box-sizing: border-box;
+}
+
+@media (max-width: 1023px) {
+  .actions-dock {
+    gap: 0.5rem;
+    padding: 0.6rem;
+    border-radius: 20px;
+  }
+  .dock-btn {
+    padding: 8px 12px;
+    border-radius: 12px;
+    gap: 4px;
+  }
+  .dock-btn-label {
+    font-size: 0.72rem;
+  }
+}
+
+.dock-btn {
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 16px;
+  color: white;
+  font-weight: 850;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Colores de botones de ranking y utilidades - RESTAURADOS A DISEÑO ORIGINAL */
+.dock-btn-ninos {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+.dock-btn-familias {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+.dock-btn-salones {
+  background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+}
+.dock-btn-ganadores {
+  background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+.dock-btn-historial {
+  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+.dock-btn-salir {
+  background: linear-gradient(135deg, #ef4444 0%, #c62828 100%);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.dock-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  filter: brightness(1.05);
+}
+
+.dock-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dock-btn-label {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+/* --- MEDALLAS DEL PODIO --- */
+.medal-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-weight: 900;
+  font-size: 0.95rem;
+  color: white;
+}
+
+.medal-oro {
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+  border: 2px solid #f59e0b;
+  animation: pulse-gold 2s infinite;
+}
+
+.medal-plata {
+  background: linear-gradient(135deg, #e2e8f0 0%, #64748b 100%);
+  border: 2px solid #cbd5e1;
+  animation: pulse-silver 2s infinite;
+}
+
+.medal-bronce {
+  background: linear-gradient(135deg, #fed7aa 0%, #9a3412 100%);
+  border: 2px solid #f97316;
+  animation: pulse-bronze 2s infinite;
+}
+
+.medal-none {
+  background: #f1f5f9;
+  border: 2px solid #e2e8f0;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+/* --- TABLA ECO COMPACTA CON CABECERA VERDE --- */
+.eco-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 4px;
+}
+
+.eco-table thead tr {
+  background-color: #16a34a;
+}
+
+.eco-table th {
+  color: white !important;
+  font-weight: 900;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  text-align: center;
+  border: none;
+}
+
+.eco-table th:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.eco-table th:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.eco-table td {
+  background: #f8fafc;
+  padding: 10px 14px;
+  font-size: 0.92rem;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: center; /* Centrar celdas por defecto para mayor simetría infantil */
+}
+
+/* Entrada numérica para cantidad de botellas */
+.counter-input {
+  font-size: 3.2rem;
+  font-weight: 900;
+  color: #16a34a;
+  width: 95px;
+  border: none;
+  background: transparent;
+  text-align: center;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+}
+.counter-input::-webkit-outer-spin-button,
+.counter-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Ilustración de paisaje en el agregador directo (banner inferior) */
+.adder-mascot-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
+  height: 90px;
+  max-height: 90px;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 3px solid #86efac;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.adder-mascot-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Cubrir todo el bloque de forma fluida y profesional */
+  filter: drop-shadow(0 4px 8px rgba(34, 197, 94, 0.1));
+}
+
+@media (max-height: 720px) {
+  .adder-mascot-container {
+    height: 60px;
+    max-height: 60px;
+  }
+}
+
+.eco-table tbody tr:hover td {
+  background-color: #f1f5f9;
+}
+
+.eco-table td:first-child {
+  border-left: 1px solid #e2e8f0;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.eco-table td:last-child {
+  border-right: 1px solid #e2e8f0;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* --- BOTONES ECO GENERALES --- */
+.btn-eco-primary,
+.btn-eco-secondary {
+  box-sizing: border-box;
+  font-family: inherit;
+  border: none;
+  border-radius: 16px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 12px 20px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+.btn-eco-primary {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+}
+
+.btn-eco-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.25);
+  filter: brightness(1.03);
+}
+
+.btn-eco-secondary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.btn-eco-secondary:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.btn-eco-primary:active,
+.btn-eco-secondary:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* --- LOGINS Y FORMULARIOS (DISEÑO PREMIUM CON CABECERA VERDE) --- */
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  overflow-y: auto;
+  position: relative;
+  z-index: 10;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 0 !important; /* Permitir cabecera full-width */
+  border: 4px solid #bbf7d0;
+  border-radius: 28px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 12px 36px rgba(34, 197, 94, 0.1);
+  box-sizing: border-box;
+}
+
+.auth-header {
+  background: linear-gradient(135deg, #16a34a 0%, #059669 100%);
+  color: white;
+  padding: 1.5rem 1.8rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.auth-header h2 {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.auth-header p {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #a7f3d0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.auth-logo-icon {
+  font-size: 2.2rem;
+  animation: float 4s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.2rem;
+}
+
+.auth-body {
+  padding: 1.8rem;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex-grow: 1;
+  border-top: 1px solid #e2e8f0;
+  height: 1px;
+}
+
+.auth-divider::before {
+  margin-right: 1rem;
+}
+
+.auth-divider::after {
+  margin-left: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #475569;
+}
+
+.relative-input-container {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+}
+
+.eco-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  background-color: #f8fafc;
+}
+
+.relative-input-container .eco-input {
+  padding-left: 44px;
+}
+
+.eco-input:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
+  background-color: white;
+}
+
+select.eco-input {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.alert-box {
+  padding: 0.65rem 0.85rem;
+  border-radius: 14px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.82rem;
+  margin-bottom: 1rem;
+}
+
+.alert-danger {
+  background-color: #fef2f2;
+  border: 2px solid #fecaca;
+  color: #dc2626;
+}
+
+.alert-success {
+  background-color: #f0fdf4;
+  border: 2px solid #bbf7d0;
+  color: #16a34a;
+}
+
+/* --- MODALES GENERALES (OVERLAY Y ESTRUCTURA) --- */
+.eco-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.eco-modal-content {
+  background: white;
+  border: 4px solid #bbf7d0;
+  border-radius: 28px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: scale-up 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.eco-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 1.5rem;
+  border-bottom: 2px solid #f0fdf4;
+  background: #f8fafc;
+}
+
+.eco-modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #15803d;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eco-modal-close-btn {
+  background: #f1f5f9;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s ease;
+}
+
+.eco-modal-close-btn:hover {
+  background: #fca5a5;
+  color: #b91c1c;
+  transform: rotate(90deg);
+}
+
+.eco-modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.counter-section {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 1.2rem;
+  justify-content: center;
+}
+
+.counter-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background-color: #dcfce7;
+  color: #16a34a;
+  border: none;
+  font-size: 1.3rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.counter-btn:hover {
+  background-color: #bbf7d0;
+  transform: scale(1.05);
+}
+
+.counter-display {
+  text-align: center;
+}
+
+.counter-number {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #16a34a;
+  line-height: 1;
+  display: block;
+}
+
+.counter-unit {
+  font-size: 0.7rem;
+  font-weight: 750;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.quick-add-container {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+.quick-add-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.quick-add-row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.quick-add-bubble {
+  box-sizing: border-box;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid transparent;
+}
+
+.quick-add-1 {
+  background-color: #fef9c3;
+  color: #854d0e;
+  border-color: #fef08a;
+}
+
+.quick-add-5 {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-color: #bfdbfe;
+}
+
+.quick-add-10 {
+  background-color: #fce7f3;
+  color: #9d174d;
+  border-color: #fbcfe8;
+}
+
+.quick-add-bubble:hover {
+  transform: scale(1.1) rotate(2deg);
+}
+
+.quick-add-bubble:active {
+  transform: scale(0.95);
+}
+
+/* --- ADAPTACIÓN FLUIDA DE ALTURA (PANTALLAS BAJAS / LAPTOPS) --- */
+
+@media (min-width: 1024px) {
+  .actions-dock {
+    flex-wrap: nowrap !important;
+  }
+  .dock-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 8px !important;
+  }
+  .dock-btn-label {
+    font-size: 0.72rem !important;
+  }
+}
+
+@media (max-height: 850px) and (min-width: 1024px) {
+  .eco-app-layout {
+    padding: 0.8rem;
+    gap: 0.8rem;
+  }
+  .eco-sidebar {
+    gap: 0.8rem;
+  }
+  .profile-card {
+    padding: 0.8rem 1rem;
+  }
+  .mascot-bubble-area {
+    margin-top: 0.8rem;
+  }
+  .mascot-avatar {
+    font-size: 1.8rem;
+  }
+  .mascot-bubble {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  .direct-adder-card {
+    padding: 1rem;
+  }
+  .counter-section {
+    margin-bottom: 0.8rem;
+  }
+  .counter-number {
+    font-size: 2.8rem;
+  }
+  .quick-add-container {
+    margin-bottom: 0.8rem;
+  }
+  
+  .eco-main-content {
+    gap: 0.8rem;
+  }
+  .kpis-row {
+    gap: 0.8rem;
+  }
+  .compact-kpi-card {
+    padding: 0.6rem 0.8rem;
+  }
+  .kpi-icon-container {
+    width: 38px;
+    height: 38px;
+    margin-bottom: 0.3rem;
+  }
+  .kpi-icon-container svg {
+    width: 20px;
+    height: 20px;
+  }
+  .compact-kpi-value {
+    font-size: 2rem;
+  }
+  .compact-kpi-label {
+    font-size: 0.75rem;
+  }
+  
+  .tops-row {
+    gap: 0.8rem;
+  }
+  .compact-top-card {
+    padding: 0.6rem 0.8rem;
+  }
+  .compact-top-icon {
+    font-size: 1.4rem;
+  }
+  .compact-top-name {
+    font-size: 0.85rem;
+  }
+  .compact-top-value {
+    font-size: 0.75rem;
+  }
+  
+  .heroes-card {
+    padding: 1rem;
+  }
+  .heroes-card-header {
+    margin-bottom: 0.5rem;
+  }
+  .heroes-card-header h2 {
+    font-size: 1.15rem;
+  }
+  .eco-table th {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  .eco-table td {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .actions-dock {
+    padding: 0.5rem 0.8rem;
+    border-radius: 20px;
+    gap: 0.4rem;
+  }
+  .dock-btn {
+    padding: 6px 12px !important;
+    border-radius: 12px;
+    gap: 4px;
+  }
+  .dock-btn-label {
+    font-size: 0.7rem !important;
+  }
+  .dock-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-height: 720px) and (min-width: 1024px) {
+  .profile-card {
+    padding: 0.6rem 0.8rem;
+  }
+  .profile-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 1.4rem;
+  }
+  .profile-details h3 {
+    font-size: 1.1rem;
+  }
+  .profile-details p {
+    font-size: 0.75rem;
+  }
+  .mascot-bubble-area {
+    margin-top: 0.5rem;
+  }
+  .mascot-avatar {
+    font-size: 1.4rem;
+  }
+  .mascot-bubble::before {
+    left: -8px;
+    top: 10px;
+    border-width: 4px 6px 4px 0;
+    border-color: transparent #cbd5e1 transparent transparent;
+  }
+  .mascot-bubble::after {
+    left: -6px;
+    top: 10px;
+    border-width: 4px 6px 4px 0;
+    border-color: transparent #f0fdf4 transparent transparent;
+  }
+  .mascot-bubble {
+    border-radius: 12px;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+  
+  .direct-adder-card {
+    padding: 0.8rem;
+  }
+  .direct-adder-card h3 {
+    font-size: 0.95rem !important;
+    margin-bottom: 0.4rem !important;
+  }
+  .counter-section {
+    gap: 0.8rem;
+    margin-bottom: 0.4rem;
+  }
+  .counter-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+  }
+  .counter-number {
+    font-size: 2.2rem;
+  }
+  .quick-add-container {
+    margin-bottom: 0.5rem;
+  }
+  .quick-add-bubble {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    border-radius: 10px;
+  }
+  .btn-eco-primary {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 12px;
+  }
+  
+  .compact-kpi-card {
+    padding: 0.5rem 0.6rem;
+  }
+  .kpi-icon-container {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 0.2rem;
+    background: #f0fdf4;
+  }
+  .kpi-icon-container svg {
+    width: 14px;
+    height: 14px;
+  }
+  .compact-kpi-value {
+    font-size: 1.8rem;
+  }
+  .compact-kpi-label {
+    font-size: 0.7rem;
+  }
+  .compact-kpi-subtext {
+    font-size: 0.65rem;
+  }
+  
+  .compact-top-card {
+    padding: 0.5rem 0.6rem;
+    gap: 0.4rem;
+  }
+  .compact-top-icon {
+    font-size: 1.2rem;
+  }
+  .compact-top-name {
+    font-size: 0.75rem;
+  }
+  .compact-top-value {
+    font-size: 0.7rem;
+  }
+  
+  .heroes-card {
+    padding: 0.8rem;
+  }
+  .heroes-card-header {
+    margin-bottom: 0.3rem;
+  }
+  .heroes-card-header h2 {
+    font-size: 1rem;
+  }
+  .eco-table th {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+  .eco-table td {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  .medal-container {
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+  }
+  
+  .actions-dock {
+    padding: 0.4rem 0.6rem;
+    border-radius: 16px;
+    gap: 0.3rem;
+  }
+  .dock-btn {
+    padding: 5px 10px !important;
+    border-radius: 10px;
+    gap: 3px;
+  }
+  .dock-btn-label {
+    font-size: 0.65rem !important;
+  }
+}
+
+/* --- ADAPTACIÓN DE ALTURA PARA FORMULARIOS DE LOGIN / REGISTRO --- */
+
+@media (max-height: 850px) {
+  .auth-card {
+    border-radius: 20px;
+    max-width: 360px;
+  }
+  .auth-header {
+    padding: 1rem 1.2rem;
+    gap: 4px;
+  }
+  .auth-header h2 {
+    font-size: 1.4rem;
+  }
+  .auth-header p {
+    font-size: 0.75rem;
+  }
+  .auth-logo-icon {
+    font-size: 1.8rem;
+  }
+  .auth-body {
+    padding: 1.2rem;
+  }
+  .form-group {
+    margin-bottom: 0.8rem;
+  }
+  .eco-input {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    border-radius: 12px;
+  }
+  .relative-input-container .eco-input {
+    padding-left: 38px;
+  }
+  .input-icon {
+    left: 12px;
+  }
+  .auth-divider {
+    margin: 1rem 0;
+  }
+}
+
+@media (max-height: 720px) {
+  .auth-card {
+    border-radius: 16px;
+    max-width: 330px;
+  }
+  .auth-header {
+    padding: 0.6rem 1rem;
+    gap: 2px;
+  }
+  .auth-header h2 {
+    font-size: 1.2rem;
+  }
+  .auth-header p {
+    display: none;
+  }
+  .auth-logo-icon {
+    font-size: 1.4rem;
+  }
+  .auth-body {
+    padding: 0.8rem 1rem;
+  }
+  .form-group {
+    margin-bottom: 0.6rem;
+    gap: 0.2rem;
+  }
+  .form-label {
+    font-size: 0.8rem;
+  }
+  .eco-input {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 10px;
+  }
+  .relative-input-container .eco-input {
+    padding-left: 32px;
+  }
+  .input-icon {
+    left: 10px;
+  }
+  .input-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+  .auth-divider {
+    margin: 0.6rem 0;
+    font-size: 0.7rem;
+  }
+}
+
+/* --- TABLAS RESPONSIVAS ÚNICAMENTE PARA CELULARES (UX CARDS) --- */
+@media (max-width: 768px) {
+  /* Compactar la sección de Perfil y Mascotas */
+  .profile-card {
+    padding: 0.8rem !important;
+    border-radius: 20px !important;
+  }
+  .profile-avatar {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 1.4rem !important;
+  }
+  .profile-details h3 {
+    font-size: 1.1rem !important;
+  }
+  .profile-details p {
+    font-size: 0.78rem !important;
+  }
+  .mascot-bubble-area {
+    margin-top: 0.8rem !important;
+  }
+  .mascot-avatar {
+    font-size: 1.4rem !important;
+  }
+  .mascot-bubble {
+    padding: 0.4rem 0.6rem !important;
+    font-size: 0.75rem !important;
+    border-radius: 12px !important;
+  }
+  .mascot-bubble::before {
+    top: 10px !important;
+    border-width: 4px 6px 4px 0 !important;
+  }
+  .mascot-bubble::after {
+    top: 10px !important;
+    border-width: 4px 6px 4px 0 !important;
+  }
+
+  /* Compactar el agregador de botellas "Reciclar Botellas" */
+  .direct-adder-card {
+    padding: 0.8rem !important;
+    border-radius: 20px !important;
+  }
+  .direct-adder-card h3 {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+  .counter-section {
+    gap: 0.8rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+  .counter-btn {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 10px !important;
+    font-size: 1.1rem !important;
+  }
+  .counter-number {
+    font-size: 2.6rem !important;
+  }
+  .quick-add-container {
+    margin-bottom: 0.8rem !important;
+  }
+  .quick-add-label {
+    font-size: 0.65rem !important;
+    margin-bottom: 0.3rem !important;
+  }
+  .quick-add-bubble {
+    padding: 6px 10px !important;
+    font-size: 0.75rem !important;
+    border-radius: 10px !important;
+  }
+  .direct-adder-card .btn-eco-primary {
+    padding: 10px 16px !important;
+    font-size: 0.88rem !important;
+    border-radius: 14px !important;
+  }
+
+  /* Reducir títulos principales y contenedores para aprovechar espacio */
+  .heroes-card-header h2 {
+    font-size: 1.1rem !important;
+  }
+  .heroes-card {
+    padding: 0.8rem !important;
+    border-radius: 20px !important;
+  }
+  .eco-modal-title {
+    font-size: 1.1rem !important;
+  }
+  .eco-modal-header {
+    padding: 0.8rem 1rem !important;
+  }
+  .eco-modal-body {
+    padding: 0.8rem !important;
+  }
+  .eco-modal-content {
+    border-radius: 20px !important;
+  }
+
+  /* Convertir tablas en bloques de tarjetas individuales */
+  .eco-table, 
+  .eco-table thead, 
+  .eco-table tbody, 
+  .eco-table th, 
+  .eco-table td, 
+  .eco-table tr {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Ocultar el encabezado original en celulares */
+  .eco-table thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  /* Cada fila actúa como una tarjeta 3D independiente y más compacta */
+  .eco-table tbody tr {
+    background: #ffffff !important;
+    border: 3px solid #86efac;
+    border-radius: 14px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 4px 0 #bbf7d0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    transition: transform 0.2s ease;
+  }
+
+  .eco-table tbody tr:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Estilo para las celdas apiladas más compactas */
+  .eco-table td {
+    border: none !important;
+    padding: 4px 6px !important;
+    text-align: right !important; /* El valor queda a la derecha */
+    display: flex;
+    justify-content: space-between; /* Alinea etiqueta izquierda y valor derecha */
+    align-items: center;
+    font-size: 0.86rem;
+    background: transparent !important;
+    border-bottom: 1px dashed #e2e8f0 !important;
+  }
+
+  .eco-table td:last-child {
+    border-bottom: none !important;
+  }
+
+  /* Insertar etiquetas de columna responsivas usando el data-label */
+  .eco-table td::before {
+    content: attr(data-label);
+    font-weight: 900;
+    color: #64748b;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    text-align: left;
+  }
+
+  /* Ajustar las medallas en la tarjeta móvil */
+  .eco-table td[data-label="Puesto"] {
+    justify-content: space-between;
+  }
+}
+
+/* --- REJILLAS Y METRICAS RESPONSIVAS PARA TABLETS Y CELULARES --- */
+@media (max-width: 1023px) {
+  /* Mostrar los 6 KPIs en rejilla responsiva de 2 columnas x 3 filas en celulares y tablets */
+  .kpis-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.8rem !important;
+  }
+
+  /* Reducir tamaño de emojis en KPIs para no restar importancia al texto en celulares y tablets */
+  .compact-top-icon {
+    font-size: 1.35rem !important;
+  }
+
+  .compact-top-card {
+    padding: 0.65rem 0.8rem !important;
+    gap: 0.6rem !important;
+    justify-content: flex-start !important; /* Alineado ordenado a la izquierda */
+  }
+
+  .compact-top-label {
+    font-size: 0.65rem !important;
+  }
+
+  .compact-top-name {
+    font-size: 0.88rem !important;
+  }
+
+  .compact-top-value {
+    font-size: 0.7rem !important;
+  }
+
+  /* Barra de acciones Dock responsiva en 2 columnas x 3 filas (como los KPIs) */
+  .actions-dock {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.6rem !important;
+    padding: 0.8rem !important;
+    border-radius: 24px !important;
+  }
+
+  .dock-btn {
+    padding: 8px 10px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    display: flex !important;
+    flex-direction: row !important; /* Icono y texto al lado, mucho más natural */
+    gap: 5px !important;
+    border-radius: 14px !important;
+    height: 42px !important; /* Altura fija cómoda de botón */
+    box-sizing: border-box !important;
+  }
+
+  .dock-btn svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .dock-btn-label {
+    font-size: 0.66rem !important;
+    white-space: nowrap !important;
+    letter-spacing: 0px !important;
+  }
+}

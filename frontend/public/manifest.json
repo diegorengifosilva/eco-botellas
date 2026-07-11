@@ -1,0 +1,17 @@
+{
+  "name": "Eco Botellas - Reciclaje Escolar",
+  "short_name": "EcoBotellas",
+  "description": "Aplicación de reciclaje de botellas para niños de colegio inicial (3, 4 y 5 años)",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0fdf4",
+  "theme_color": "#16a34a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
