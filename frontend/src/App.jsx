@@ -569,13 +569,6 @@ const Dashboard = () => {
               </h3>
               <p>👪 Familia: {alumno.familia}</p>
               <p>🏫 Salón: {getSalonFriendly(alumno.salon)}</p>
-              {alumno.is_admin && (
-                <Link to="/admin-panel" style={{ textDecoration: 'none', display: 'block', marginTop: '6px' }}>
-                  <button className="btn-eco-secondary" style={{ padding: '4px 10px', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '3px', width: 'auto', fontWeight: 'bold', border: '1px solid #ef4444', color: '#ef4444', cursor: 'pointer' }}>
-                    Panel Admin 🛠️
-                  </button>
-                </Link>
-              )}
             </div>
           </div>
           
