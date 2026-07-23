@@ -576,114 +576,116 @@ const AdminPanel = () => {
          ========================================== */}
       {alumnoModalOpen && (
         <div className="eco-modal-overlay" onClick={(e) => e.target.classList.contains('eco-modal-overlay') && setAlumnoModalOpen(false)}>
-          <div className="eco-modal-content" style={{ width: '100%', maxWidth: '500px' }}>
+          <form 
+            onSubmit={handleSaveAlumno} 
+            className="eco-modal-content" 
+            style={{ width: '100%', maxWidth: '500px' }}
+          >
             <div className="eco-modal-header">
               <h2 className="eco-modal-title">
                 {selectedAlumno ? '✏️ Editar Datos de Alumno' : '📝 Agregar Nuevo Alumno'}
               </h2>
-              <button onClick={() => setAlumnoModalOpen(false)} className="eco-modal-close-btn">&times;</button>
+              <button type="button" onClick={() => setAlumnoModalOpen(false)} className="eco-modal-close-btn">&times;</button>
             </div>
-            <form onSubmit={handleSaveAlumno}>
-              <div className="eco-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                
-                {alumnoFormError && (
-                  <div className="alert-box alert-danger">
-                    ⚠️ {alumnoFormError}
-                  </div>
-                )}
-
-                <div className="form-group">
-                  <label className="form-label" style={{ fontWeight: 'bold' }}>Nombre del Alumno *</label>
-                  <input 
-                    type="text" 
-                    value={alumnoNombre}
-                    onChange={(e) => setAlumnoNombre(e.target.value)}
-                    placeholder="Ej. Dieguito"
-                    className="eco-input"
-                    required
-                  />
+            <div className="eco-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              
+              {alumnoFormError && (
+                <div className="alert-box alert-danger">
+                  ⚠️ {alumnoFormError}
                 </div>
+              )}
 
-                <div className="form-group">
-                  <label className="form-label" style={{ fontWeight: 'bold' }}>Familia *</label>
-                  <input 
-                    type="text" 
-                    value={alumnoFamilia}
-                    onChange={(e) => setAlumnoFamilia(e.target.value)}
-                    placeholder="Ej. Rengifo Silva"
-                    className="eco-input"
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label" style={{ fontWeight: 'bold' }}>Salón / Aula *</label>
-                  <select 
-                    value={alumnoSalon} 
-                    onChange={(e) => setAlumnoSalon(e.target.value)} 
-                    className="eco-input"
-                  >
-                    <option value="3 anos">3 Años</option>
-                    <option value="4 anos">4 Años</option>
-                    <option value="5 anos">5 Años</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label" style={{ fontWeight: 'bold' }}>Usuario de Ingreso *</label>
-                  <input 
-                    type="text" 
-                    value={alumnoUsuario}
-                    onChange={(e) => setAlumnoUsuario(e.target.value)}
-                    placeholder="Ej. dieguito10"
-                    className="eco-input"
-                    required
-                    disabled={!!selectedAlumno} // No permitir cambiar usuario a los creados para evitar problemas
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label" style={{ fontWeight: 'bold' }}>
-                    {selectedAlumno ? 'Nueva Contraseña (dejar vacío para no cambiar)' : 'Contraseña *'}
-                  </label>
-                  <div className="relative-input-container">
-                    <span className="input-icon"><Key size={16} /></span>
-                    <input 
-                      type="password" 
-                      value={alumnoPassword}
-                      onChange={(e) => setAlumnoPassword(e.target.value)}
-                      placeholder={selectedAlumno ? 'Ingresa una nueva contraseña' : 'Ej. clave123'}
-                      className="eco-input"
-                      style={{ paddingLeft: '38px' }}
-                      required={!selectedAlumno}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '5px' }}>
-                  <input 
-                    type="checkbox" 
-                    id="isAdminCheck"
-                    checked={alumnoIsAdmin}
-                    onChange={(e) => setAlumnoIsAdmin(e.target.checked)}
-                    style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-                  />
-                  <label htmlFor="isAdminCheck" style={{ fontWeight: '800', color: '#ef4444', cursor: 'pointer' }}>
-                    ¿Hacer Administrador (Superadmin)? 🛠️
-                  </label>
-                </div>
-
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 'bold' }}>Nombre del Alumno *</label>
+                <input 
+                  type="text" 
+                  value={alumnoNombre}
+                  onChange={(e) => setAlumnoNombre(e.target.value)}
+                  placeholder="Ej. Dieguito"
+                  className="eco-input"
+                  required
+                />
               </div>
-              <div className="eco-modal-header" style={{ borderTop: '1px solid #e2e8f0', borderBottom: 'none', justifyContent: 'flex-end', gap: '10px', paddingTop: '10px' }}>
-                <button type="button" onClick={() => setAlumnoModalOpen(false)} className="btn-eco-secondary" style={{ padding: '8px 16px' }}>
-                  Cancelar
-                </button>
-                <button type="submit" className="btn-eco-primary" style={{ padding: '8px 20px' }}>
-                  {selectedAlumno ? 'Actualizar Alumno' : 'Registrar Alumno'}
-                </button>
+
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 'bold' }}>Familia *</label>
+                <input 
+                  type="text" 
+                  value={alumnoFamilia}
+                  onChange={(e) => setAlumnoFamilia(e.target.value)}
+                  placeholder="Ej. Rengifo Silva"
+                  className="eco-input"
+                  required
+                />
               </div>
-            </form>
-          </div>
+
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 'bold' }}>Salón / Aula *</label>
+                <select 
+                  value={alumnoSalon} 
+                  onChange={(e) => setAlumnoSalon(e.target.value)} 
+                  className="eco-input"
+                >
+                  <option value="3 anos">3 Años</option>
+                  <option value="4 anos">4 Años</option>
+                  <option value="5 anos">5 Años</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 'bold' }}>Usuario de Ingreso *</label>
+                <input 
+                  type="text" 
+                  value={alumnoUsuario}
+                  onChange={(e) => setAlumnoUsuario(e.target.value)}
+                  placeholder="Ej. dieguito10"
+                  className="eco-input"
+                  required
+                  disabled={!!selectedAlumno} // No permitir cambiar usuario a los creados para evitar problemas
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 'bold' }}>
+                  {selectedAlumno ? 'Nueva Contraseña (dejar vacío para no cambiar)' : 'Contraseña *'}
+                </label>
+                <div className="relative-input-container">
+                  <span className="input-icon"><Key size={16} /></span>
+                  <input 
+                    type="password" 
+                    value={alumnoPassword}
+                    onChange={(e) => setAlumnoPassword(e.target.value)}
+                    placeholder={selectedAlumno ? 'Ingresa una nueva contraseña' : 'Ej. clave123'}
+                    className="eco-input"
+                    style={{ paddingLeft: '38px' }}
+                    required={!selectedAlumno}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '5px' }}>
+                <input 
+                  type="checkbox" 
+                  id="isAdminCheck"
+                  checked={alumnoIsAdmin}
+                  onChange={(e) => setAlumnoIsAdmin(e.target.checked)}
+                  style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                />
+                <label htmlFor="isAdminCheck" style={{ fontWeight: '800', color: '#ef4444', cursor: 'pointer' }}>
+                  ¿Hacer Administrador (Superadmin)? 🛠️
+                </label>
+              </div>
+
+            </div>
+            <div className="eco-modal-header" style={{ borderTop: '1px solid #e2e8f0', borderBottom: 'none', justifyContent: 'flex-end', gap: '10px', paddingTop: '10px' }}>
+              <button type="button" onClick={() => setAlumnoModalOpen(false)} className="btn-eco-secondary" style={{ padding: '8px 16px' }}>
+                Cancelar
+              </button>
+              <button type="submit" className="btn-eco-primary" style={{ padding: '8px 20px' }}>
+                {selectedAlumno ? 'Actualizar Alumno' : 'Registrar Alumno'}
+              </button>
+            </div>
+          </form>
         </div>
       )}
 
@@ -692,88 +694,90 @@ const AdminPanel = () => {
          ========================================== */}
       {registroModalOpen && (
         <div className="eco-modal-overlay" onClick={(e) => e.target.classList.contains('eco-modal-overlay') && setRegistroModalOpen(false)}>
-          <div className="eco-modal-content" style={{ width: '100%', maxWidth: '450px' }}>
+          <form 
+            onSubmit={handleSaveRegistro} 
+            className="eco-modal-content" 
+            style={{ width: '100%', maxWidth: '450px' }}
+          >
             <div className="eco-modal-header">
               <h2 className="eco-modal-title">
                 {selectedRegistro ? '✏️ Editar Cantidad de Botellas' : '➕ Agregar Registro de Botellas'}
               </h2>
-              <button onClick={() => setRegistroModalOpen(false)} className="eco-modal-close-btn">&times;</button>
+              <button type="button" onClick={() => setRegistroModalOpen(false)} className="eco-modal-close-btn">&times;</button>
             </div>
-            <form onSubmit={handleSaveRegistro}>
-              <div className="eco-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                
-                {regFormError && (
-                  <div className="alert-box alert-danger">
-                    ⚠️ {regFormError}
+            <div className="eco-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              
+              {regFormError && (
+                <div className="alert-box alert-danger">
+                  ⚠️ {regFormError}
+                </div>
+              )}
+
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 'bold' }}>Alumno *</label>
+                {selectedRegistro ? (
+                  <div className="eco-input" style={{ backgroundColor: '#f1f5f9', color: '#64748b', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+                    {selectedRegistro.alumno_nombre} (Fam. {selectedRegistro.alumno_familia})
                   </div>
+                ) : (
+                  <select 
+                    value={regAlumnoId} 
+                    onChange={(e) => setRegAlumnoId(e.target.value)} 
+                    className="eco-input"
+                    required
+                  >
+                    <option value="" disabled>Selecciona un alumno...</option>
+                    {alumnos.map((a) => (
+                      <option key={a.id} value={a.id}>
+                        {a.nombre} (Fam. {a.familia}) - {getSalonFriendly(a.salon)}
+                      </option>
+                    ))}
+                  </select>
                 )}
-
-                <div className="form-group">
-                  <label className="form-label" style={{ fontWeight: 'bold' }}>Alumno *</label>
-                  {selectedRegistro ? (
-                    <div className="eco-input" style={{ backgroundColor: '#f1f5f9', color: '#64748b', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
-                      {selectedRegistro.alumno_nombre} (Fam. {selectedRegistro.alumno_familia})
-                    </div>
-                  ) : (
-                    <select 
-                      value={regAlumnoId} 
-                      onChange={(e) => setRegAlumnoId(e.target.value)} 
-                      className="eco-input"
-                      required
-                    >
-                      <option value="" disabled>Selecciona un alumno...</option>
-                      {alumnos.map((a) => (
-                        <option key={a.id} value={a.id}>
-                          {a.nombre} (Fam. {a.familia}) - {getSalonFriendly(a.salon)}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label" style={{ fontWeight: 'bold' }}>Cantidad de Botellas *</label>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <button 
-                      type="button" 
-                      onClick={() => setRegCantidad(prev => Math.max(1, prev - 1))}
-                      style={{ width: '38px', height: '38px', borderRadius: '50%', border: 'none', backgroundColor: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontWeight: 'bold' }}
-                    >
-                      <Minus size={16} />
-                    </button>
-                    <input 
-                      type="number" 
-                      value={regCantidad}
-                      onChange={(e) => {
-                        const val = parseInt(e.target.value, 10);
-                        setRegCantidad(isNaN(val) ? 0 : Math.max(1, val));
-                      }}
-                      className="eco-input" 
-                      style={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold', flex: 1, margin: 0 }}
-                      min="1"
-                      required
-                    />
-                    <button 
-                      type="button" 
-                      onClick={() => setRegCantidad(prev => prev + 1)}
-                      style={{ width: '38px', height: '38px', borderRadius: '50%', border: 'none', backgroundColor: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontWeight: 'bold' }}
-                    >
-                      <Plus size={16} />
-                    </button>
-                  </div>
-                </div>
-
               </div>
-              <div className="eco-modal-header" style={{ borderTop: '1px solid #e2e8f0', borderBottom: 'none', justifyContent: 'flex-end', gap: '10px', paddingTop: '10px' }}>
-                <button type="button" onClick={() => setRegistroModalOpen(false)} className="btn-eco-secondary" style={{ padding: '8px 16px' }}>
-                  Cancelar
-                </button>
-                <button type="submit" className="btn-eco-primary" style={{ padding: '8px 20px' }}>
-                  {selectedRegistro ? 'Actualizar Cantidad' : 'Registrar Botellas'}
-                </button>
+
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 'bold' }}>Cantidad de Botellas *</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <button 
+                    type="button" 
+                    onClick={() => setRegCantidad(prev => Math.max(1, prev - 1))}
+                    style={{ width: '38px', height: '38px', borderRadius: '50%', border: 'none', backgroundColor: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontWeight: 'bold' }}
+                  >
+                    <Minus size={16} />
+                  </button>
+                  <input 
+                    type="number" 
+                    value={regCantidad}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value, 10);
+                      setRegCantidad(isNaN(val) ? 0 : Math.max(1, val));
+                    }}
+                    className="eco-input" 
+                    style={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold', flex: 1, margin: 0 }}
+                    min="1"
+                    required
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => setRegCantidad(prev => prev + 1)}
+                    style={{ width: '38px', height: '38px', borderRadius: '50%', border: 'none', backgroundColor: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontWeight: 'bold' }}
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
               </div>
-            </form>
-          </div>
+
+            </div>
+            <div className="eco-modal-header" style={{ borderTop: '1px solid #e2e8f0', borderBottom: 'none', justifyContent: 'flex-end', gap: '10px', paddingTop: '10px' }}>
+              <button type="button" onClick={() => setRegistroModalOpen(false)} className="btn-eco-secondary" style={{ padding: '8px 16px' }}>
+                Cancelar
+              </button>
+              <button type="submit" className="btn-eco-primary" style={{ padding: '8px 20px' }}>
+                {selectedRegistro ? 'Actualizar Cantidad' : 'Registrar Botellas'}
+              </button>
+            </div>
+          </form>
         </div>
       )}
 
