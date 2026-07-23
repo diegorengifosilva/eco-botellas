@@ -10,7 +10,13 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import Alumno, RegistroBotellas
-from .serializers import AlumnoSerializer, RegisterSerializer, RegistroBotellasSerializer
+from .serializers import (
+    AlumnoSerializer, 
+    RegisterSerializer, 
+    RegistroBotellasSerializer,
+    AdminAlumnoSerializer,
+    AdminRegistroBotellasSerializer
+)
 
 # Frases ecológicas para el Header animado
 ECO_FRASES = [
@@ -298,3 +304,121 @@ class WeeklyWinnersView(APIView):
             })
             
         return Response(winners)
+
+class IsSuperAdmin(permissions.BasePermission):
+    """Permiso personalizado para que solo los superadmins (is_admin=True) accedan."""
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_authenticated and request.user.is_admin)
+
+class AdminAlumnosView(APIView):
+    permission_classes = [IsSuperAdmin]
+
+    def get(self, request):
+        # Listar alumnos anotados con su total de botellas acumuladas
+        alumnos = Alumno.objects.annotate(
+            total_botellas=Coalesce(Sum('registros_botellas__cantidad'), 0)
+        ).order_by('nombre')
+        serializer = AdminAlumnoSerializer(alumnos, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        # Crear un nuevo alumno desde el panel de admin
+        serializer = AdminAlumnoSerializer(data=request.data)
+        if serializer.is_valid():
+            alumno = serializer.save()
+            return Response({
+                "message": "¡Alumno creado con éxito por el Administrador!",
+                "alumno": AdminAlumnoSerializer(alumno).data
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class AdminAlumnoDetailView(APIView):
+    permission_classes = [IsSuperAdmin]
+
+    def get_object(self, pk):
+        try:
+            return Alumno.objects.get(pk=pk)
+        except Alumno.DoesNotExist:
+            return None
+
+    def put(self, request, pk):
+        # Editar un alumno existente
+        alumno = self.get_object(pk)
+        if not alumno:
+            return Response({"error": "Alumno no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = AdminAlumnoSerializer(alumno, data=request.data, partial=True)
+        if serializer.is_valid():
+            alumno_actualizado = serializer.save()
+            return Response({
+                "message": "Datos del alumno actualizados correctamente.",
+                "alumno": AdminAlumnoSerializer(alumno_actualizado).data
+            })
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        # Eliminar un alumno (eliminación en cascada de sus registros automática)
+        alumno = self.get_object(pk)
+        if not alumno:
+            return Response({"error": "Alumno no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        
+        nombre = alumno.nombre
+        alumno.delete()
+        return Response({
+            "message": f"Alumno '{nombre}' y todos sus registros asociados eliminados correctamente."
+        })
+
+class AdminRegistrosView(APIView):
+    permission_classes = [IsSuperAdmin]
+
+    def get(self, request):
+        # Listar todos los registros de botellas de todos los alumnos
+        registros = RegistroBotellas.objects.select_related('alumno').all().order_by('-fecha_hora')
+        serializer = AdminRegistroBotellasSerializer(registros, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        # Agregar un registro de botellas manualmente a un alumno
+        serializer = AdminRegistroBotellasSerializer(data=request.data)
+        if serializer.is_valid():
+            registro = serializer.save()
+            return Response({
+                "message": "Registro de botellas creado con éxito.",
+                "registro": AdminRegistroBotellasSerializer(registro).data
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class AdminRegistroDetailView(APIView):
+    permission_classes = [IsSuperAdmin]
+
+    def get_object(self, pk):
+        try:
+            return RegistroBotellas.objects.get(pk=pk)
+        except RegistroBotellas.DoesNotExist:
+            return None
+
+    def put(self, request, pk):
+        # Editar un registro de botellas existente (e.g. cantidad)
+        registro = self.get_object(pk)
+        if not registro:
+            return Response({"error": "Registro de botellas no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = AdminRegistroBotellasSerializer(registro, data=request.data, partial=True)
+        if serializer.is_valid():
+            registro_actualizado = serializer.save()
+            return Response({
+                "message": "Registro de botellas actualizado con éxito.",
+                "registro": AdminRegistroBotellasSerializer(registro_actualizado).data
+            })
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        # Eliminar un registro de botellas específico
+        registro = self.get_object(pk)
+        if not registro:
+            return Response({"error": "Registro no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        
+        registro.delete()
+        return Response({
+            "message": "Registro de botellas eliminado con éxito."
+        })

@@ -120,6 +120,12 @@ body {
   position: relative;
   overflow-y: auto;
   width: 100%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.eco-app-layout > * {
+  pointer-events: auto;
 }
 
 @media (max-width: 1023px) {
@@ -1708,4 +1714,52 @@ select.eco-input {
     white-space: nowrap !important;
     letter-spacing: 0px !important;
   }
+}
+
+/* --- ESTILOS DE TABLAS Y ACCIONES EN EL PANEL DE CONTROL SUPERADMIN --- */
+@media (min-width: 1024px) {
+  .admin-table-container {
+    max-height: calc(100vh - 430px);
+    overflow-y: auto;
+  }
+}
+
+.btn-admin-action-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid #bbf7d0;
+  background-color: #f0fdf4;
+  color: #166534;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-admin-action-edit:hover {
+  background-color: #dcfce7;
+  transform: translateY(-1px);
+}
+
+.btn-admin-action-delete {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid #fca5a5;
+  background-color: #fef2f2;
+  color: #991b1b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-admin-action-delete:hover {
+  background-color: #fee2e2;
+  transform: translateY(-1px);
 }

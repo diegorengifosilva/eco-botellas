@@ -1,13 +1,17 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import (
+from reciclaje_api.views import (
     LoginView,
     RegisterView,
     DashboardView,
     AddBotellasView,
     RankingsView,
     HistoryView,
-    WeeklyWinnersView
+    WeeklyWinnersView,
+    AdminAlumnosView,
+    AdminAlumnoDetailView,
+    AdminRegistrosView,
+    AdminRegistroDetailView
 )
 
 urlpatterns = [
@@ -24,4 +28,11 @@ urlpatterns = [
     path('rankings/', RankingsView.as_view(), name='rankings'),
     path('history/', HistoryView.as_view(), name='history'),
     path('winners/weekly/', WeeklyWinnersView.as_view(), name='winners_weekly'),
+
+    # Panel de Administración
+    path('admin/alumnos/', AdminAlumnosView.as_view(), name='admin_alumnos'),
+    path('admin/alumnos/<int:pk>/', AdminAlumnoDetailView.as_view(), name='admin_alumno_detail'),
+    path('admin/registros/', AdminRegistrosView.as_view(), name='admin_registros'),
+    path('admin/registros/<int:pk>/', AdminRegistroDetailView.as_view(), name='admin_registro_detail'),
 ]
+

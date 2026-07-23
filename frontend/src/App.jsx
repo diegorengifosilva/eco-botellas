@@ -9,6 +9,7 @@ import api from './services/api';
 import EcoRankingModal from './components/EcoRankingModal';
 import MiHistorialModal from './components/MiHistorialModal';
 import GanadoresSemanalesModal from './components/GanadoresSemanalesModal';
+import AdminPanel from './components/AdminPanel';
 
 /* ==========================================
    COMPONENTE: HOJAS FLOTANTES DE FONDO
@@ -96,7 +97,7 @@ const LeafBackground = () => {
   }, []);
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', overflow: 'hidden', pointerEvents: 'none', zIndex: 3 }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', overflow: 'hidden', pointerEvents: 'none', zIndex: 1 }}>
       {bubbles.map((b) => (
         <div
           key={b.id}
@@ -558,9 +559,23 @@ const Dashboard = () => {
               {getAvatarForName(alumno.nombre)}
             </div>
             <div className="profile-details">
-              <h3>{alumno.nombre}</h3>
+              <h3 style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '5px', margin: 0 }}>
+                {alumno.nombre} 
+                {alumno.is_admin && (
+                  <span style={{ fontSize: '0.65rem', padding: '2px 6px', backgroundColor: '#fee2e2', color: '#ef4444', borderRadius: '9999px', border: '1px solid #fca5a5', fontWeight: 'bold' }}>
+                    Admin 🛠️
+                  </span>
+                )}
+              </h3>
               <p>👪 Familia: {alumno.familia}</p>
               <p>🏫 Salón: {getSalonFriendly(alumno.salon)}</p>
+              {alumno.is_admin && (
+                <Link to="/admin-panel" style={{ textDecoration: 'none', display: 'block', marginTop: '6px' }}>
+                  <button className="btn-eco-secondary" style={{ padding: '4px 10px', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '3px', width: 'auto', fontWeight: 'bold', border: '1px solid #ef4444', color: '#ef4444', cursor: 'pointer' }}>
+                    Panel Admin 🛠️
+                  </button>
+                </Link>
+              )}
             </div>
           </div>
           
@@ -810,6 +825,13 @@ const Dashboard = () => {
             <span className="dock-btn-label">Mi Historial</span>
           </button>
 
+          {alumno.is_admin && (
+            <button onClick={() => navigate('/admin-panel')} className="dock-btn" style={{ border: '2px solid #ef4444', backgroundColor: 'rgba(239, 68, 68, 0.05)', cursor: 'pointer' }}>
+              <div className="dock-btn-icon" style={{ color: '#ef4444' }}><Users size={18} /></div>
+              <span className="dock-btn-label" style={{ color: '#ef4444', fontWeight: 'bold' }}>Panel Admin</span>
+            </button>
+          )}
+
           <button onClick={handleLogout} className="dock-btn dock-btn-salir">
             <div className="dock-btn-icon"><LogOut size={18} /></div>
             <span className="dock-btn-label">Salir</span>
@@ -861,6 +883,17 @@ const ProtectedRoute = ({ children }) => {
 };
 
 /* ==========================================
+   RUTA ADMINISTRADOR PROTEGIDA
+   ========================================== */
+const AdminRoute = ({ children }) => {
+  const { user } = useAuth();
+  if (!user || !user.is_admin) {
+    return <Navigate to="/eco-botellas" replace />;
+  }
+  return children;
+};
+
+/* ==========================================
    APLICACIÓN PRINCIPAL
    ========================================== */
 function App() {
@@ -876,6 +909,16 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-panel"
+            element={
+              <ProtectedRoute>
+                <AdminRoute>
+                  <AdminPanel />
+                </AdminRoute>
               </ProtectedRoute>
             }
           />
